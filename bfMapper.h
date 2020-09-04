@@ -61,39 +61,39 @@ bfMapper::bfMapper(World* map)
 
 bool bfMapper::inBounds(Point p)
 {
-     return p.x >= 0 && p.x < map->mapW && p.y >= 0  && p.y < map->mapH;
+     return 0 <= p.x && p.x < map->mapW && 0 <= p.y && p.y < map->mapH;
 }
 
 
 void bfMapper::setMapValue(Point start, int cut)
 {
-   Point current, next, marker = {INF, INF};
-   auto visited = MaxCode::list<Point>();
-   int level = 1;
-   que.push(start);
+   Point current, next, marker = {INF, INF}; 
+   auto visited = MaxCode::list<Point>(); 
+   int level = 1;      
+   que.push(start);   
    visited.push(start);
-   que.push(marker);
+   que.push(marker);   
    while (!que.empty())
    {
-     current = que.pop();
-      if (current == marker)
-      {
-        level++; que.push(marker);
-        if (que.front() == marker)
-          break;
-      }
-      if (level == cut)
+     current = que.pop();    
+      if (current == marker) 
+      { 
+        level++; que.push(marker); 
+        if (que.front() == marker) 
+          break;                   
+      } 
+      if (level == cut)     
         break;
-      for (auto dir : cdir)
+      for (auto dir : cdir) 
       {
-        next = Point{current.x + dir.x, current.y + dir.y, dir.s};
+        next = Point{current.x + dir.x, current.y + dir.y, dir.s}; 
         if (inBounds(next) && map->layout[next.x][next.y].blocks == false)
         {
-          if (visited.find(next) == false)
+          if (visited.find(next) == false) 
           {
-            que.push(next);
-            visited.push(next);
-	          map->layout[next.x][next.y].level = level;
+            que.push(next);         
+            visited.push(next);   
+	          map->layout[next.x][next.y].level = level; 
           }
         }
       }
@@ -108,7 +108,7 @@ void bfMapper::inverseField(Point start, int cut)
 {
    Point current, next, marker = {INF, INF};
    auto visited = MaxCode::list<Point>();
-   int level = 100;
+   int level = 100;      
    que.push(start);   
    visited.push(start); 
    que.push(marker);   

@@ -27,6 +27,7 @@ THE SOFTWARE.
 #include <random>
 #include <string>
 #include <unordered_map>
+#include <queue>
 #include "BearLibTerminal.h"
 #include "helpers.h"
 #include "basic_objects.h"
@@ -36,82 +37,15 @@ THE SOFTWARE.
 #include "list.h"
 #include "bfMapper.h"
 #include "colors.h"
-
-void drawAll(World* map, ent* me)
-{
- int x, y;
- float mix;
- int level;
- for (x = 0; x < 80; x++)
- {
-  for (y = 0; y < 40; y++)
-  {
-  level = map->layout[x][y].level;
-  if (map->layout[x][y].blocks == true)
-  {
-   terminal_layer(1);
-   terminal_color("white");
-   terminal_print(x, y, "#");
-  } else {
-   terminal_layer(0);
-   mix = level/2;
-   terminal_color(fadeColors(blue, yellow, mix/10));
-   terminal_print(x, y, ".");
-  }
- }
-}
-  me->render();
-}
-
-std::vector<bullet*> bulletStatus(std::vector<bullet*> rnds, World* Map)
-{
-  if (rnds.size() > 0)
-  {
-   int count = 0;
-   for (auto p: rnds)
-   {
-    p->render(Map);
-    if (!p->go)
-      rnds.pop_back();
-   }
-  }
-  return rnds;
-}
+#include "engine.h"
 
 int main()
 {
  int k;
- terminal_set("window; title='dj', size=85x42;");
+ terminal_set("window; title='MaxCodes shooting Demo', size=85x42;");
  terminal_open();
- World* Map;
- ent* me;
- Map = new World(80, 40);
- me = new ent(10,10,666,'@');
- Map->sampleMap();
- bfMapper bf(Map);
- std::vector<bullet*> caps;
- while(true)
- {
-  terminal_clear();
-  if (terminal_has_input())
-  {
-   k=terminal_read();
-   switch (k)
-   {
-    case TK_UP: me->move(Map,0,-1); break;
-    case TK_DOWN: me->move(Map,0,1); break;
-    case TK_LEFT: me->move(Map,-1,0); break;
-    case TK_RIGHT: me->move(Map,1,0); break;
-    case TK_SPACE: caps.push_back(me->shoot()); break;
-    case TK_Q: terminal_close(); exit(0); break;
-    default: break;
-   }
-   bf.setMapValue(me->pos, 200);
-  }
-  drawAll(bf.map, me);
-  caps = bulletStatus(caps, bf.map);
-  terminal_refresh();
- }
+ engine eng;
+ eng.game_loop();
  terminal_close();
  return 0;
 }

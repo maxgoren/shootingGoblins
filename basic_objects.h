@@ -89,6 +89,8 @@ void sampleMap();
      this->layout[x][y].populated = false;
      this->layout[x][y].blocks = true;
      this->layout[x][y].level = 0;
+     this->layout[x][y].x = x;
+     this->layout[x][y].y = y;
    }
   }
  }
