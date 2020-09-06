@@ -25,8 +25,8 @@ THE SOFTWARE.
 
 class bfMapper {
   Point cdir[8];
-  MaxCode::Queue<Point> que;
-  MaxCode::list<Point> visited;
+  mctk::Queue<Point> que;
+  mctk::list<Point> visited;
 public:
   World* map;
   void setMapValue(Point origin, int cut);
@@ -47,16 +47,10 @@ bfMapper::bfMapper(World* map)
        map->layout[x][y].level = 0;
      }
    }
-   Point N({0,-1,'^'});
-   Point S({0,1,'v'});
-   Point E({1,0,'>'});
-   Point W({-1,0,'<'});
-   Point NW({-1,1});
-   Point NE({1,1});
-   Point SW({-1,-1});
-   Point SE({1,-1});
-   cdir[0]=E; cdir[1]=N; cdir[2]=W; cdir[3]=S;
-   cdir[4]=NW; cdir[5]=SE; cdir[6]=SW; cdir[7]=NE;
+  cdir[0] = {0,-1}; cdir[1] = {0,1};
+  cdir[2] ={-1,1}; cdir[3] = {1,-1};
+  cdir[4] = {1,0}; cdir[5] = {-1,0};
+  cdir[6] = {-1,-1}; cdir[7] = {1,1};
 }
 
 bool bfMapper::inBounds(Point p)
@@ -68,7 +62,7 @@ bool bfMapper::inBounds(Point p)
 void bfMapper::setMapValue(Point start, int cut)
 {
    Point current, next, marker = {INF, INF}; 
-   auto visited = MaxCode::list<Point>(); 
+   auto visited = mctk::list<Point>(); 
    int level = 1;      
    que.push(start);   
    visited.push(start);
@@ -107,7 +101,7 @@ void bfMapper::setMapValue(Point start, int cut)
 void bfMapper::inverseField(Point start, int cut)
 {
    Point current, next, marker = {INF, INF};
-   auto visited = MaxCode::list<Point>();
+   auto visited = mctk::list<Point>();
    int level = 100;      
    que.push(start);   
    visited.push(start); 

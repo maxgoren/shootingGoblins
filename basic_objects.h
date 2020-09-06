@@ -68,20 +68,23 @@ public:
   this->lR.y = y + h;
  }
 };
+typedef std::vector<std::vector<Point>> field;
 
 class World {
 public:
 int mapW;
 int mapH;
-Point layout[160][80];
+field layout;
 std::vector<Rect> zone;
 void setShape(Point pos, int w, int h);
+void side_scrolling();
 void sampleMap();
  World(int w, int h)
  {
   int x, y;
   this->mapW = w;
   this->mapH = h;
+  layout.resize(mapW, std::vector<Point>(mapH));
   for (x = 0; x < w; x++)
   {
    for (y = 0; y < h; y++)
@@ -101,14 +104,22 @@ void World::setShape(Point pos, int w, int h)
 {
  int x, y;
  for (x = pos.x; x < pos.x+w; x++)
- for (y = pos.y; y < pos.y+h; y++)
  {
- {
-  this->layout[x][y].blocks = false;
-  this->layout[x][y].populated = false;
+  for (y = pos.y; y < pos.y+h; y++)
+  {
+    this->layout[x][y].blocks = false;
+    this->layout[x][y].populated = false;
   }
  }
 }
+
+
+void World::side_scrolling()
+{
+  int x, y;
+}
+
+
 
 void World::sampleMap()
 {

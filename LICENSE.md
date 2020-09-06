@@ -21,34 +21,3 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-
-#include <vector>
-#include <iostream>
-#include <random>
-#include <string>
-#include <unordered_map>
-#include <queue>
-#include <algorithm>
-#include "queue.h"
-#include "list.h"
-#include "BearLibTerminal.h"
-#include "helpers.h"
-#include "basic_objects.h"
-#include "bfs.h"
-#include "bfs.cpp"
-#include "bullets.h"
-#include "basic_ent.h"
-#include "bfMapper.h"
-#include "colors.h"
-#include "engine.h"
-
-
-int main()
-{
- terminal_set("window; title='MaxCodes shooting Demo', size=85x42;");
- terminal_open();
- engine eng;
- eng.game_loop();
- terminal_close();
- return 0;
-}

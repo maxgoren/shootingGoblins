@@ -1,4 +1,4 @@
-namespace MaxCode {
+namespace mctk {
 
 template <class T>
 class list{

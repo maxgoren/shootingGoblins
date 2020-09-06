@@ -25,15 +25,19 @@ THE SOFTWARE.
 class ent {
 public:
   std::unordered_map<char, Point>facing;
+  int bullets_remaining;
   Point pos;
   char face;
   char ch;
   int id;
+  void die(World* map);
   bool canMove(World* Map, int x, int y);
   void move(World*, int x, int y);
+  void jump(World* map);
   void render();
   void turn(bool dir);
-  bullet* shoot();
+  void dijk_step(World* map);
+  bullet* shoot(char type);
   ent(int x, int y, int id, char ch);
   ent();
 };
@@ -45,11 +49,11 @@ ent::ent(int x, int y, int id, char ch)
   facing['S'] = {0, 1};
   facing['E'] = {1,0};
   facing['W'] = {-1,0}; 
- this->pos.x = x;
- this->pos.y = y;
+ this->pos = {x,y};
  this->ch = ch;
  this->id = id;
  this->face = 'N';
+ this->bullets_remaining = 25;
 }
 
 bool ent::canMove(World* Map, int x, int y)
@@ -100,9 +104,9 @@ void ent::render()
 
 
 
-bullet* ent::shoot()
+bullet* ent::shoot(char t)
 {
-    return new bullet(face, pos);
+    return new bullet(face, pos, t);
 }
 
 void ent::turn(bool cw)
@@ -130,4 +134,62 @@ void ent::turn(bool cw)
         if (cur == 'E')
           this->face = 'N'; 
     }
+}
+
+void ent::dijk_step(World* map)
+{
+  int i;
+  int bestValue = 1000; //dummy value arbitrarilly high to gaurentee first comparison sets a proper value.
+  int distance;
+  Point dir;
+  Point faceP;
+  Point best;   //the point chosen to move to.
+  Point checking; 
+  std::array<Point, 4> cmp;
+  cmp[0] = {0,-1};
+  cmp[1] = {1,0};
+  cmp[2] = {0,1};
+  cmp[3] = {-1,0};
+  for (i = 0; i < 4; i++)
+  {                      
+    dir = cmp[i];          //loop through checking all the directions
+    checking.x = pos.x + dir.x;
+    checking.y = pos.y + dir.y;
+    checking.level = map->layout[checking.x][checking.y].level;
+    if (checking.level < bestValue && map->layout[checking.x][checking.y].blocks == false 
+    && map->layout[checking.x][checking.y].populated == false)
+    {                                   
+      bestValue = checking.level;      
+      best = checking;                  
+      faceP = cmp[i];
+    }
+  } 
+  for (auto f : facing)
+    if (f.second == faceP)
+      face = f.first;
+  map->layout[pos.x][pos.y].blocks = false;       
+  map->layout[pos.x][pos.y].populated = false;    
+  pos = best;                                       
+  map->layout[pos.x][pos.y].blocks = true;         
+  map->layout[pos.x][pos.y].populated = true;
+}
+
+void ent::die(World* map)
+{
+  this->ch = 'X';
+  map->layout[pos.x][pos.y].populated = false;
+  map->layout[pos.x][pos.y].blocks = false;
+  terminal_color("red");
+  terminal_print(pos.x,pos.y-1, ".");
+  terminal_print(pos.x-2,pos.y,".:X:.");
+  terminal_print(pos.x,pos.y+1,".");
+}
+
+void ent::jump(World* map)
+{
+  int p;
+  for (p = pos.y; p < pos.y+5; p++)
+    pos.y = p; terminal_refresh();
+  while (!map->layout[pos.x][pos.y].blocks)
+    pos.y = --p; terminal_refresh();
 }
